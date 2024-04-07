@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { AuthModule } from './auth/auth.module';
-import { PropertyModule } from './property/property.module';
-import { UserModule } from './user/user.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { PropertyModule } from './modules/property/property.module';
+import { UserModule } from './modules/user/user.module';
+import { dataSouceOption } from './config/database-config';
 
 @Module({
   imports: [
@@ -11,6 +13,7 @@ import { UserModule } from './user/user.module';
       isGlobal: true,
       cache: true,
     }),
+    TypeOrmModule.forRoot(dataSouceOption),
     AuthModule,
     PropertyModule,
     UserModule,

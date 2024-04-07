@@ -1,0 +1,22 @@
+version: '3'
+services:
+  sweet-space:
+    container_name: sweet-space-db
+    image: postgres:16
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    networks:
+      - sweet-space-network
+    restart: unless-stopped
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+networks:
+  sweet-space-network:
+
+volumes:
+  postgres_data: {}
