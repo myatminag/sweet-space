@@ -8,17 +8,20 @@ import {
   HttpStatus,
   Param,
   ParseIntPipe,
+  Body,
 } from '@nestjs/common';
 
 import { PropertyService } from './property.service';
+import { CreatePropertyDTO } from './dto/create-property.dto';
 
 @Controller('property')
 export class PropertyController {
   constructor(private propertyService: PropertyService) {}
 
   @Post()
-  createProperty() {
-    return this.propertyService.create('A new property.');
+  createProperty(@Body() createPropertyDTO: CreatePropertyDTO) {
+    const results = this.propertyService.create(createPropertyDTO);
+    return results;
   }
 
   @Get()
