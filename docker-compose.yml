@@ -1,6 +1,6 @@
 version: '3'
 services:
-  sweet-space:
+  db:
     container_name: sweet-space-db
     image: postgres:16
     ports:
@@ -9,14 +9,27 @@ services:
       - POSTGRES_USER=${DB_USERNAME}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_NAME}
-    networks:
-      - sweet-space-network
     restart: unless-stopped
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - SweetSpace
+
+  app:
+    build: ./
+    container_name: sweet-space
+    env_file:
+      - .env
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
+    networks:
+      - SweetSpace
 
 networks:
-  sweet-space-network:
+  SweetSpace:
+    driver: bridge
 
 volumes:
-  postgres_data: {}
+  pg_data: {}
