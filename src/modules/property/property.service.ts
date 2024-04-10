@@ -17,7 +17,7 @@ export class PropertyService {
   async createProperty(dto: CreatePropertyDTO) {
     const property = await this.propertyRepository.save({ ...dto });
 
-    return property;
+    return { ...property };
   }
 
   async findAllProperties({ page, limit, size, offset }: Pagination) {
@@ -41,7 +41,7 @@ export class PropertyService {
       throw new NotFoundException('Property not found!');
     }
 
-    return property;
+    return { ...property };
   }
 
   async updateProperty(id: string, dto: UpdatePropertyDTO) {
@@ -59,7 +59,7 @@ export class PropertyService {
 
     const updatedProperty = await this.propertyRepository.save(property);
 
-    return updatedProperty;
+    return { ...updatedProperty };
   }
 
   async deleteProperty(id: string) {

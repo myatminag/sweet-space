@@ -2,11 +2,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 import { PropertType, NoiseLevel } from 'src/utils/enum';
+import { User } from 'src/modules/user/entities/user.entity';
 
 @Entity('property')
 export class Property {
@@ -72,4 +74,7 @@ export class Property {
 
   @UpdateDateColumn({ select: false })
   updated_at: Date;
+
+  @ManyToOne(() => User, (user) => user.properties)
+  user: User;
 }

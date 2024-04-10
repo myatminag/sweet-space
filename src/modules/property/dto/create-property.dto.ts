@@ -91,4 +91,7 @@ export class CreatePropertyDTO {
   @IsArray()
   @IsUUID('4', { each: true })
   images: string[];
+
+  @IsNumber({}, { each: true })
+  readonly users;
 }

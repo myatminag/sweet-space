@@ -15,7 +15,7 @@ import { Pagination } from './types';
 export function IsAtLeastOnePriceProvided(
   validationOptions?: ValidationOptions,
 ) {
-  return function (object: unknown, propertyName: string) {
+  return (object: unknown, propertyName: string) => {
     registerDecorator({
       name: 'isAtLeastOnePriceProvided',
       target: object.constructor,
@@ -60,3 +60,28 @@ export const PaginationParams = createParamDecorator(
     };
   },
 );
+
+export const IsEqual = (
+  relatedPropertyName: string,
+  validationOptions?: ValidationOptions,
+) => {
+  return (object: unknown, propertyName: string) => {
+    registerDecorator({
+      name: 'isEqual',
+      target: object.constructor,
+      propertyName: propertyName,
+      constraints: [relatedPropertyName], // Add relatedPropertyName here
+      options: validationOptions,
+      validator: {
+        validate(value: any, args: ValidationArguments) {
+          const relatedValue = (args.object as any)[args.constraints[0]]; // Access related property using constraints[0]
+          return value === relatedValue;
+        },
+        defaultMessage(args: ValidationArguments) {
+          const relatedPropertyName = args.constraints[0];
+          return `${args.property} must match ${relatedPropertyName} exactly!`;
+        },
+      },
+    });
+  };
+};
