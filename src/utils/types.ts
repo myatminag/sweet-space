@@ -9,3 +9,10 @@ export type EnvVariables = {
   DB_USERNAME: string;
   DB_PASSWORD: string;
 };
+
+export interface Pagination {
+  page: number;
+  limit: number;
+  size: number;
+  offset: number;
+}

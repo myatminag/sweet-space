@@ -4,53 +4,46 @@ import {
   Get,
   Put,
   Delete,
-  HttpException,
-  HttpStatus,
   Param,
-  ParseIntPipe,
   Body,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 
 import { PropertyService } from './property.service';
 import { CreatePropertyDTO } from './dto/create-property.dto';
+import { UpdatePropertyDTO } from './dto/update-property.dto';
+import { PaginationParams } from 'src/utils/custom-decorator';
+import { Pagination } from 'src/utils/types';
 
 @Controller('property')
 export class PropertyController {
   constructor(private propertyService: PropertyService) {}
 
   @Post()
-  createProperty(@Body() createPropertyDTO: CreatePropertyDTO) {
-    const results = this.propertyService.create(createPropertyDTO);
-    return results;
+  createProperty(@Body() dto: CreatePropertyDTO) {
+    return this.propertyService.createProperty(dto);
   }
 
   @Get()
-  getAllProperty() {
-    try {
-      return this.propertyService.findAll();
-    } catch (e) {
-      throw new HttpException(
-        'server error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-        { cause: e },
-      );
-    }
+  getAllProperties(@PaginationParams() paginationParams: Pagination) {
+    return this.propertyService.findAllProperties(paginationParams);
   }
 
-  @Get(':id')
-  getPropertyById(
-    @Param(
-      'id',
-      new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
-    )
-    id: number,
+  @Get(':uuid')
+  getPropertyById(@Param('uuid', new ParseUUIDPipe()) id: string) {
+    return this.propertyService.findPropertyById(id);
+  }
+
+  @Put(':uuid')
+  updateProperty(
+    @Param('uuid', new ParseUUIDPipe()) id: string,
+    @Body() dto: UpdatePropertyDTO,
   ) {
-    return `fetch property based on id ${typeof id}`;
+    return this.propertyService.updateProperty(id, dto);
   }
 
-  @Put(':id')
-  updateProperty() {}
-
-  @Delete(':id')
-  deleteProperty() {}
+  @Delete(':uuid')
+  deleteProperty(@Param('uuid', new ParseUUIDPipe()) id: string) {
+    return this.propertyService.deleteProperty(id);
+  }
 }

@@ -1,8 +1,16 @@
 import {
+  BadRequestException,
+  createParamDecorator,
+  ExecutionContext,
+} from '@nestjs/common';
+import { Request } from 'express';
+import {
   registerDecorator,
   ValidationOptions,
   ValidationArguments,
 } from 'class-validator';
+
+import { Pagination } from './types';
 
 export function IsAtLeastOnePriceProvided(
   validationOptions?: ValidationOptions,
@@ -30,3 +38,25 @@ export function IsAtLeastOnePriceProvided(
     });
   };
 }
+
+export const PaginationParams = createParamDecorator(
+  (data, ctx: ExecutionContext): Pagination => {
+    const req: Request = ctx.switchToHttp().getRequest();
+    const page = parseInt(req.query.page as string) || 1;
+    const size = parseInt(req.query.size as string) || 10;
+
+    if (isNaN(page) || isNaN(size)) {
+      throw new BadRequestException('Invalid page or size!');
+    }
+
+    const limit = size;
+    const offset = (page - 1) * size;
+
+    return {
+      page,
+      limit,
+      size,
+      offset,
+    };
+  },
+);

@@ -7,6 +7,6 @@ export enum PropertType {
 
 export enum NoiseLevel {
   LOW = 'low',
-  MEDIUM = 'medium',
+  NORMAL = 'normal',
   LOUD = 'loud',
 }

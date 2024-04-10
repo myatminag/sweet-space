@@ -1,5 +1,5 @@
-import { Type } from 'class-transformer';
 import {
+  IsArray,
   IsBoolean,
   IsEnum,
   IsNotEmpty,
@@ -9,7 +9,6 @@ import {
   IsUUID,
   Max,
   Min,
-  ValidateNested,
 } from 'class-validator';
 
 import { IsAtLeastOnePriceProvided } from 'src/utils/custom-decorator';
@@ -41,31 +40,9 @@ export class CreatePropertyDTO {
   @IsAtLeastOnePriceProvided()
   price: string;
 
-  @ValidateNested()
-  @Type(() => amenitiesDto)
-  amenities: {
-    amenities: amenitiesDto;
-  };
-
-  @ValidateNested()
-  @Type(() => nearByPlaceDto)
-  @IsOptional()
-  nearby_places?: {
-    nearby_places: nearByPlaceDto;
-  };
-
-  @IsEnum(NoiseLevel)
-  @IsNotEmpty({ message: 'Noise level is required!' })
-  noise_level: string;
-
-  @IsUUID()
-  images: string;
-}
-
-export class amenitiesDto {
   @IsEnum(PropertType)
   @IsNotEmpty({ message: 'Type is required!' })
-  type: string;
+  type: PropertType;
 
   @IsString()
   @IsNotEmpty({ message: 'Area is required!' })
@@ -100,12 +77,18 @@ export class amenitiesDto {
   @IsBoolean()
   @IsOptional()
   allow_parking: boolean = false;
-}
 
-export class nearByPlaceDto {
   @IsString()
   place_name: string;
 
   @IsString()
   distance: string;
+
+  @IsEnum(NoiseLevel)
+  @IsNotEmpty({ message: 'Noise level is required!' })
+  noise_level: NoiseLevel;
+
+  @IsArray()
+  @IsUUID('4', { each: true })
+  images: string[];
 }

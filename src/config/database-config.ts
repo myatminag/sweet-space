@@ -1,6 +1,7 @@
+import { join } from 'path';
+import { config } from 'dotenv';
 import { ConfigService } from '@nestjs/config';
 import { DataSource, DataSourceOptions } from 'typeorm';
-import { config } from 'dotenv';
 
 import { EnvVariables } from 'src/utils/types';
 
@@ -17,8 +18,8 @@ export const dataSouceOption: DataSourceOptions = {
   username: configService.get('DB_USERNAME'),
   password: configService.get('DB_PASSWORD'),
   database: configService.get('DB_NAME'),
-  entities: ['dist/**/*.entity{.ts,.js}'],
   synchronize: true,
+  entities: [join(__dirname, '../**/*.entity{.ts,.js}')],
   logging: true,
 };
 
