@@ -1,5 +1,6 @@
-import { Property } from 'src/modules/property/entities/property.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+
+import { Property } from 'src/modules/property/entities/property.entity';
 
 @Entity('user')
 export class User {
@@ -9,7 +10,7 @@ export class User {
   @Column()
   full_name: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Column()

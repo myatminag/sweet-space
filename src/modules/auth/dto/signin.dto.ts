@@ -9,6 +9,9 @@ export class SignInDto {
 
   @IsString()
   @IsNotEmpty()
-  @Matches(PASSWORD_REGEX, { message: 'Password is too weak!' })
+  @Matches(PASSWORD_REGEX, {
+    message:
+      'Please ensure it contains at least one uppercase letter, one lowercase letter, one digit or special character!',
+  })
   password: string;
 }

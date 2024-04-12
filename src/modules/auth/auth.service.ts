@@ -1,52 +1,75 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { compare, genSalt, hash } from 'bcryptjs';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { compare } from 'bcryptjs';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 
 import { SignUpDto } from './dto/signup.dto';
 import { SignInDto } from './dto/signin.dto';
-import { User } from '../user/entities/user.entity';
+import { EnvVariables } from 'src/utils/types';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService<EnvVariables>,
+    private readonly userService: UserService,
   ) {}
 
   async signup(dto: SignUpDto) {
-    const salt = await genSalt();
-    dto.password = await hash(dto.password, salt);
+    return await this.userService.create(dto);
+  }
 
-    const user = await this.userRepository.save(dto);
+  async signin(dto: SignInDto) {
+    const user = await this.validateUser(dto.email, dto.password);
+
+    const { accessToken, refreshToken } = await this.generateAccessToken(
+      user.id,
+      user.email,
+    );
+
+    return {
+      user,
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    };
+  }
+
+  async validateUser(email: string, password: string) {
+    const user = await this.userService.findUserByEmail(email);
+
+    const isMatch = await compare(password, user.password);
+
+    if (!isMatch) {
+      throw new UnauthorizedException('Invalid password!');
+    }
 
     delete user.password;
-    delete user.confirm_password;
-    delete user.ph_number;
 
     return { ...user };
   }
 
-  async signin(dto: SignInDto) {
-    const user = await this.userRepository.findOneBy({ email: dto.email });
+  async generateAccessToken(userId: string, email: string) {
+    const accessToken = await this.jwtService.signAsync(
+      { id: userId, email },
+      {
+        secret: this.configService.get('JWT_SECRET'),
+        expiresIn: this.configService.get('ACCESS_TOKEN_EXPIRES_IN'),
+      },
+    );
 
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
+    const refreshToken = await this.jwtService.signAsync(
+      {
+        id: userId,
+        email,
+      },
+      {
+        algorithm: 'HS512',
+        secret: this.configService.get('REFRESH_TOKEN_SECRET'),
+        expiresIn: this.configService.get('REFRESH_TOKEN_EXPIRES_IN'),
+      },
+    );
 
-    const passwordMatched = await compare(dto.password, user.password);
-
-    if (!passwordMatched) {
-      throw new UnauthorizedException('Invalid Password!');
-    }
-
-    delete user.password;
-    delete user.ph_number;
-
-    return { ...user };
+    return { accessToken, refreshToken };
   }
 }

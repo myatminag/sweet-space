@@ -1,6 +1,5 @@
 import { IsEmail, IsNotEmpty, IsString, Matches } from 'class-validator';
 
-import { IsEqual } from 'src/utils/custom-decorator';
 import { PASSWORD_REGEX } from 'src/constants/regex.constant';
 
 export class SignUpDto {
@@ -14,11 +13,9 @@ export class SignUpDto {
 
   @IsString()
   @IsNotEmpty()
-  @Matches(PASSWORD_REGEX, { message: 'Password is too weak!' })
+  @Matches(PASSWORD_REGEX, {
+    message:
+      'Please ensure it contains at least one uppercase letter, one lowercase letter, one digit or special character!',
+  })
   password: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @IsEqual('password')
-  confirm_password: string;
 }
