@@ -11,32 +11,37 @@ import { UserService } from '../user/user.service';
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly jwtService: JwtService,
-    private readonly configService: ConfigService<EnvVariables>,
-    private readonly userService: UserService,
+    private jwtService: JwtService,
+    private configService: ConfigService<EnvVariables>,
+    private userService: UserService,
   ) {}
 
   async signup(dto: SignUpDto) {
-    return await this.userService.create(dto);
+    const user = await this.userService.create(dto);
+
+    delete user.password;
+    delete user.ph_number;
+
+    return user;
   }
 
   async signin(dto: SignInDto) {
     const user = await this.validateUser(dto.email, dto.password);
 
-    const { accessToken, refreshToken } = await this.generateAccessToken(
-      user.id,
-      user.email,
-    );
+    const token = await this.generateAccessToken(user.id, user.email);
 
     return {
       user,
-      access_token: accessToken,
-      refresh_token: refreshToken,
+      ...token,
     };
   }
 
   async validateUser(email: string, password: string) {
     const user = await this.userService.findUserByEmail(email);
+
+    if (!user) {
+      return null;
+    }
 
     const isMatch = await compare(password, user.password);
 
@@ -45,8 +50,9 @@ export class AuthService {
     }
 
     delete user.password;
+    delete user.ph_number;
 
-    return { ...user };
+    return user;
   }
 
   async generateAccessToken(userId: string, email: string) {
@@ -70,6 +76,6 @@ export class AuthService {
       },
     );
 
-    return { accessToken, refreshToken };
+    return { access_token: accessToken, refresh_token: refreshToken };
   }
 }

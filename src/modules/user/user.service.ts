@@ -28,8 +28,6 @@ export class UserService {
         password: hashPassword,
       });
 
-      delete user.password;
-
       return user;
     } catch (error) {
       if (error instanceof QueryFailedError) {
@@ -47,6 +45,6 @@ export class UserService {
       throw new NotFoundException('User not found!');
     }
 
-    return { ...user };
+    return user;
   }
 }
