@@ -5,7 +5,7 @@ import { Property } from 'src/modules/property/entities/property.entity';
 @Entity('user')
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  user_id: string;
 
   @Column()
   full_name: string;

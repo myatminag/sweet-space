@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -69,12 +70,16 @@ export class Property {
   @Column('uuid', { array: true })
   images: string[];
 
-  @CreateDateColumn({ select: false })
+  @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP', type: 'timestamp' })
   created_at: Date;
 
-  @UpdateDateColumn({ select: false })
+  @UpdateDateColumn({ default: () => 'CURRENT_TIMESTAMP', type: 'timestamp' })
   updated_at: Date;
 
-  @ManyToOne(() => User, (user) => user.properties)
+  @ManyToOne(() => User, (user) => user.properties, {
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'user_id' })
   user: User;
 }

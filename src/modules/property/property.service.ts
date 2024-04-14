@@ -2,28 +2,36 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { Pagination } from 'src/utils/types';
+import { UserService } from '../user/user.service';
 import { Property } from './entities/property.entity';
 import { CreatePropertyDTO } from './dto/create-property.dto';
 import { UpdatePropertyDTO } from './dto/update-property.dto';
-import { Pagination } from 'src/utils/types';
 
 @Injectable()
 export class PropertyService {
   constructor(
     @InjectRepository(Property)
     private propertyRepository: Repository<Property>,
+    private userService: UserService,
   ) {}
 
-  async createProperty(dto: CreatePropertyDTO) {
-    const property = await this.propertyRepository.save({ ...dto });
+  async createProperty(userId: string, dto: CreatePropertyDTO) {
+    const user = await this.userService.findUserById(userId);
 
-    return { ...property };
+    const property = await this.propertyRepository.save({
+      ...dto,
+      user,
+    });
+
+    return property;
   }
 
   async findAllProperties({ page, limit, size, offset }: Pagination) {
     const [property, total] = await this.propertyRepository.findAndCount({
       take: limit,
       skip: offset,
+      relations: ['user'],
     });
 
     return {
@@ -35,21 +43,22 @@ export class PropertyService {
   }
 
   async findPropertyById(id: string) {
-    const property = await this.propertyRepository.findOneBy({ id });
+    const property = await this.propertyRepository.findOne({
+      where: {
+        id,
+      },
+      relations: ['user'],
+    });
 
     if (!property) {
       throw new NotFoundException('Property not found!');
     }
 
-    return { ...property };
+    return property;
   }
 
   async updateProperty(id: string, dto: UpdatePropertyDTO) {
     const property = await this.findPropertyById(id);
-
-    if (!property) {
-      throw new NotFoundException('Property not found!');
-    }
 
     const { images, ...updatedData } = dto;
 
@@ -57,9 +66,7 @@ export class PropertyService {
 
     Object.assign(property, updatedData);
 
-    const updatedProperty = await this.propertyRepository.save(property);
-
-    return { ...updatedProperty };
+    return await this.propertyRepository.save(property);
   }
 
   async deleteProperty(id: string) {

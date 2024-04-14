@@ -7,6 +7,7 @@ import {
   Param,
   Body,
   ParseUUIDPipe,
+  Req,
 } from '@nestjs/common';
 
 import { PropertyService } from './property.service';
@@ -14,14 +15,18 @@ import { CreatePropertyDTO } from './dto/create-property.dto';
 import { UpdatePropertyDTO } from './dto/update-property.dto';
 import { PaginationParams } from 'src/utils/custom-decorator';
 import { Pagination } from 'src/utils/types';
+import { UserService } from '../user/user.service';
 
 @Controller('property')
 export class PropertyController {
-  constructor(private propertyService: PropertyService) {}
+  constructor(
+    private propertyService: PropertyService,
+    private userService: UserService,
+  ) {}
 
   @Post()
-  createProperty(@Body() dto: CreatePropertyDTO) {
-    return this.propertyService.createProperty(dto);
+  createProperty(@Req() req, @Body() dto: CreatePropertyDTO) {
+    return this.propertyService.createProperty(req.user.id, dto);
   }
 
   @Get()

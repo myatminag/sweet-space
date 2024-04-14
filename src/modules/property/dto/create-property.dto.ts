@@ -21,9 +21,11 @@ import { PropertType, NoiseLevel } from 'src/utils/enum';
 
 export class CreatePropertyDTO {
   @IsString()
+  @IsNotEmpty()
   property_name: string;
 
   @IsString()
+  @IsNotEmpty()
   address: string;
 
   @IsString()
@@ -91,7 +93,4 @@ export class CreatePropertyDTO {
   @IsArray()
   @IsUUID('4', { each: true })
   images: string[];
-
-  @IsNumber({}, { each: true })
-  readonly users;
 }

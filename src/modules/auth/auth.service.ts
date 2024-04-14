@@ -1,10 +1,15 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { compare } from 'bcryptjs';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
-import { SignUpDto } from './dto/signup.dto';
-import { SignInDto } from './dto/signin.dto';
+import { SignUpDto } from './dto/sign-up.dto';
+import { SignInDto } from './dto/sign-in.dto';
+import { ForgotPasswordDTO } from './dto/forgot-password.dto';
 import { EnvVariables } from 'src/utils/types';
 import { UserService } from '../user/user.service';
 
@@ -28,7 +33,7 @@ export class AuthService {
   async signin(dto: SignInDto) {
     const user = await this.validateUser(dto.email, dto.password);
 
-    const token = await this.generateAccessToken(user.id, user.email);
+    const token = await this.generateAccessToken(user.user_id, user.email);
 
     return {
       user,
@@ -77,5 +82,13 @@ export class AuthService {
     );
 
     return { access_token: accessToken, refresh_token: refreshToken };
+  }
+
+  async forgotPassword(dto: ForgotPasswordDTO) {
+    const user = await this.userService.findUserByEmail(dto.email);
+
+    if (!user) {
+      throw new NotFoundException('User not found!');
+    }
   }
 }
