@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-import { Property } from 'src/modules/property/entities/property.entity';
+import { Property } from '@/modules/property/entities/property.entity';
 
 @Entity('user')
 export class User {

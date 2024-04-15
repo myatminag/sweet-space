@@ -1,6 +1,6 @@
 import { IsEmail, IsNotEmpty, IsString, Matches } from 'class-validator';
 
-import { PASSWORD_REGEX } from 'src/constants/regex.constant';
+import { PASSWORD_REGEX } from '@/constants/regex.constant';
 
 export class SignInDto {
   @IsEmail()

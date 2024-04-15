@@ -7,11 +7,11 @@ import { compare } from 'bcryptjs';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
+import { EnvVariables } from '@/utils/types';
 import { SignUpDto } from './dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import { ForgotPasswordDTO } from './dto/forgot-password.dto';
-import { EnvVariables } from 'src/utils/types';
-import { UserService } from '../user/user.service';
+import { UserService } from '@/modules/user/user.service';
 
 @Injectable()
 export class AuthService {
