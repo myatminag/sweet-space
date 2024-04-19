@@ -15,13 +15,13 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @Get(':uuid')
-  findUserById(@Param('uuid', new ParseUUIDPipe()) id: string) {
+  findUserById(@Param('uuid', ParseUUIDPipe) id: string) {
     return this.userService.findUserById(id);
   }
 
   @Put(':uuid')
   updateProfile(
-    @Param('uuid', new ParseUUIDPipe()) id: string,
+    @Param('uuid', ParseUUIDPipe) id: string,
     @Body() dto: UpdateUserDTO,
   ) {
     return this.userService.updateProfile(id, dto);

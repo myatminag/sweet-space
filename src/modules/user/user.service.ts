@@ -18,7 +18,7 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async create(dto: CreateUserDTO) {
+  async createUser(dto: CreateUserDTO) {
     try {
       const salt = await genSalt();
       const hashPassword = await hash(dto.password, salt);

@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 
 import { Pagination } from '@/utils/types';
-import { UserService } from '@/modules/user/user.service';
 import { PropertyService } from './property.service';
 import { PaginationParams } from '@/utils/custom-decorator';
 import { CreatePropertyDTO } from './dto/create-property.dto';
@@ -19,10 +18,7 @@ import { UpdatePropertyDTO } from './dto/update-property.dto';
 
 @Controller('property')
 export class PropertyController {
-  constructor(
-    private propertyService: PropertyService,
-    private userService: UserService,
-  ) {}
+  constructor(private propertyService: PropertyService) {}
 
   @Post()
   createProperty(@Req() req, @Body() dto: CreatePropertyDTO) {
@@ -35,20 +31,20 @@ export class PropertyController {
   }
 
   @Get(':uuid')
-  getPropertyById(@Param('uuid', new ParseUUIDPipe()) id: string) {
+  getPropertyById(@Param('uuid', ParseUUIDPipe) id: string) {
     return this.propertyService.findPropertyById(id);
   }
 
   @Put(':uuid')
   updateProperty(
-    @Param('uuid', new ParseUUIDPipe()) id: string,
+    @Param('uuid', ParseUUIDPipe) id: string,
     @Body() dto: UpdatePropertyDTO,
   ) {
     return this.propertyService.updateProperty(id, dto);
   }
 
   @Delete(':uuid')
-  deleteProperty(@Param('uuid', new ParseUUIDPipe()) id: string) {
+  deleteProperty(@Param('uuid', ParseUUIDPipe) id: string) {
     return this.propertyService.deleteProperty(id);
   }
 }

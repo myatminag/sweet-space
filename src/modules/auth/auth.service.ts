@@ -22,7 +22,7 @@ export class AuthService {
   ) {}
 
   async signup(dto: SignUpDto) {
-    const user = await this.userService.create(dto);
+    const user = await this.userService.createUser(dto);
 
     delete user.password;
     delete user.ph_number;
