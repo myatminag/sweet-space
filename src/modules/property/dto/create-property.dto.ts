@@ -9,7 +9,9 @@ import {
   IsUUID,
   Max,
   Min,
+  ValidateNested,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 
 import { IsAtLeastOnePriceProvided } from '@/utils/custom-decorator';
 import { PropertType, NoiseLevel } from '@/utils/enum';
@@ -18,6 +20,14 @@ import { PropertType, NoiseLevel } from '@/utils/enum';
 //   const areaRegex = /^\d+\s*sqft$/i;
 //   return areaRegex.test(value);
 // };
+
+class NearByPlaces {
+  @IsString()
+  place_name: string;
+
+  @IsString()
+  distance: string;
+}
 
 export class CreatePropertyDTO {
   @IsString()
@@ -80,11 +90,10 @@ export class CreatePropertyDTO {
   @IsOptional()
   allow_parking: boolean = false;
 
-  @IsString()
-  place_name: string;
-
-  @IsString()
-  distance: string;
+  @ValidateNested()
+  @IsOptional()
+  @Type(() => NearByPlaces)
+  nearby_places: NearByPlaces[];
 
   @IsEnum(NoiseLevel)
   @IsNotEmpty({ message: 'Noise level is required!' })
