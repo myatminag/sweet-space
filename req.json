@@ -1,0 +1,35 @@
+{
+  "property_name": "property two",
+  "description": "description",
+  "address": "address",
+  "renting_price": "100,000,000",
+  "selling_price": "550,000",
+  "type": "apartment",
+  "area": "50 x 50 Sqft",
+  "bedroom": 3,
+  "bathroom": 2,
+  "access_pool": true,
+  "allow_pet": false,
+  "allow_parking": false,
+  "nearby_places": [
+    {
+      "place_name": "place_name",
+      "distance": "3 km"
+    },
+    {
+      "place_name": "place two",
+      "distance": "5 km"
+    },
+    {
+      "place_name": "place three",
+      "distance": "6 km"
+    }
+  ],
+  "noise_level": "normal",
+  "images": [
+    "8a7bcd26-81de-4f4a-9c35-84f02d1351cc",
+    "8a7bcd26-81de-4f4a-9c35-84f02d1351cc",
+    "8a7bcd26-81de-4f4a-9c35-84f02d1351cc",
+    "8a7bcd26-81de-4f4a-9c35-84f02d1351cc"
+  ]
+}

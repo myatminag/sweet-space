@@ -4,8 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { genSalt, hash } from 'bcryptjs';
-import { QueryFailedError, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { User } from './entities/user.entity';
 import { CreateUserDTO } from './dto/create-user.dto';
@@ -19,23 +18,19 @@ export class UserService {
   ) {}
 
   async createUser(dto: CreateUserDTO) {
-    try {
-      const salt = await genSalt();
-      const hashPassword = await hash(dto.password, salt);
+    const existingUser = await this.userRepository.findOneBy({
+      email: dto.email,
+    });
 
-      const user = await this.userRepository.save({
-        ...dto,
-        password: hashPassword,
-      });
-
-      return user;
-    } catch (error) {
-      if (error instanceof QueryFailedError) {
-        throw new ConflictException('Email already exists!');
-      }
-
-      throw error;
+    if (existingUser) {
+      throw new ConflictException('Email already exists!');
     }
+
+    const user = await this.userRepository.save(dto);
+
+    delete user.password;
+
+    return user;
   }
 
   async findUserByEmail(email: string) {

@@ -6,6 +6,8 @@ import {
 import { compare } from 'bcryptjs';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { genSalt, hash } from 'bcryptjs';
+import ms from 'ms';
 
 import { EnvVariables } from '@/utils/types';
 import { SignUpDto } from './dto/sign-up.dto';
@@ -21,19 +23,27 @@ export class AuthService {
     private userService: UserService,
   ) {}
 
-  async signup(dto: SignUpDto) {
-    const user = await this.userService.createUser(dto);
+  async signUp(dto: SignUpDto) {
+    const salt = await genSalt();
+    const hashPassword = await hash(dto.password, salt);
 
-    delete user.password;
-    delete user.ph_number;
+    const user = await this.userService.createUser({
+      ...dto,
+      password: hashPassword,
+    });
 
-    return user;
+    const token = await this.generateToken(user.user_id, user.email);
+
+    return {
+      user,
+      ...token,
+    };
   }
 
-  async signin(dto: SignInDto) {
+  async signIn(dto: SignInDto) {
     const user = await this.validateUser(dto.email, dto.password);
 
-    const token = await this.generateAccessToken(user.user_id, user.email);
+    const token = await this.generateToken(user.user_id, user.email);
 
     return {
       user,
@@ -60,35 +70,56 @@ export class AuthService {
     return user;
   }
 
-  async generateAccessToken(userId: string, email: string) {
-    const accessToken = await this.jwtService.signAsync(
-      { id: userId, email },
-      {
-        secret: this.configService.get('JWT_SECRET'),
-        expiresIn: this.configService.get('ACCESS_TOKEN_EXPIRES_IN'),
-      },
-    );
-
-    const refreshToken = await this.jwtService.signAsync(
-      {
-        id: userId,
-        email,
-      },
-      {
-        algorithm: 'HS512',
-        secret: this.configService.get('REFRESH_TOKEN_SECRET'),
-        expiresIn: this.configService.get('REFRESH_TOKEN_EXPIRES_IN'),
-      },
-    );
-
-    return { access_token: accessToken, refresh_token: refreshToken };
-  }
-
   async forgotPassword(dto: ForgotPasswordDTO) {
     const user = await this.userService.findUserByEmail(dto.email);
 
     if (!user) {
       throw new NotFoundException('User not found!');
     }
+  }
+
+  async refreshToken(token: string) {
+    const tokenData = token.split(' ')[1];
+
+    const decodedToken = await this.jwtService.decode(tokenData);
+
+    const { id, email } = decodedToken;
+
+    return await this.generateToken(id, email);
+  }
+
+  private async generateToken(userId: string, email: string) {
+    const tokenExpiresIn = this.configService.getOrThrow(
+      'ACCESS_TOKEN_EXPIRES_IN',
+    );
+
+    const expireIn = Date.now() + ms(tokenExpiresIn);
+
+    const [accessToken, refreshToken] = await Promise.all([
+      await this.jwtService.signAsync(
+        { id: userId, email },
+        {
+          secret: this.configService.get('JWT_SECRET'),
+          expiresIn: tokenExpiresIn,
+        },
+      ),
+      await this.jwtService.signAsync(
+        {
+          id: userId,
+          email,
+        },
+        {
+          algorithm: 'HS512',
+          secret: this.configService.get('REFRESH_TOKEN_SECRET'),
+          expiresIn: this.configService.get('REFRESH_TOKEN_EXPIRES_IN'),
+        },
+      ),
+    ]);
+
+    return {
+      access_token: accessToken,
+      refresh_token: refreshToken,
+      expire_in: expireIn,
+    };
   }
 }

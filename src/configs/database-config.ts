@@ -9,8 +9,6 @@ config();
 
 const configService = new ConfigService<EnvVariables>();
 
-console.log(configService.get('DB_HOST'));
-
 export const dataSouceOption: DataSourceOptions = {
   type: 'postgres',
   host: configService.get('DB_HOST'),

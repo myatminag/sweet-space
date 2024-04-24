@@ -8,9 +8,10 @@ import { EnvVariables } from '@/utils/types';
 import { AuthService } from './auth.service';
 import { UserModule } from '../user/user.module';
 import { AuthController } from './auth.controller';
-import { JwtStrategy } from './strategies/jwt.strategy';
 import { User } from '@/modules/user/entities/user.entity';
 import { LocalStrategy } from './strategies/local.strategy';
+import { AccessTokenStrategy } from './strategies/access.strategy';
+import { RefreshTokenStrategy } from './strategies/refresh.strategy';
 
 @Module({
   imports: [
@@ -29,7 +30,12 @@ import { LocalStrategy } from './strategies/local.strategy';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [
+    AuthService,
+    LocalStrategy,
+    AccessTokenStrategy,
+    RefreshTokenStrategy,
+  ],
   exports: [AuthService],
 })
 export class AuthModule {}
