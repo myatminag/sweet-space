@@ -10,9 +10,9 @@ import {
   Req,
 } from '@nestjs/common';
 
-import { Pagination } from '@/utils/types';
+import { Pagination } from 'src/lib/types';
 import { PropertyService } from './property.service';
-import { PaginationParams } from '@/utils/custom-decorator';
+import { PaginationParams } from 'src/lib/custom-decorator';
 import { CreatePropertyDTO } from './dto/create-property.dto';
 import { UpdatePropertyDTO } from './dto/update-property.dto';
 

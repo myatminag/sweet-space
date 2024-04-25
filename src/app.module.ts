@@ -11,20 +11,22 @@ import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard';
 import { S3Module } from '@/modules/s3/s3.module';
 import { RegionModule } from '@/modules/region/region.module';
 import { CategoryModule } from '@/modules/category/category.module';
+import { MailModule } from '@/modules/mail/mail.module';
 
 @Module({
   imports: [
     AuthModule,
     PropertyModule,
     UserModule,
+    S3Module,
+    RegionModule,
+    CategoryModule,
+    MailModule,
     TypeOrmModule.forRoot(dataSouceOption),
     ConfigModule.forRoot({
       isGlobal: true,
       cache: true,
     }),
-    S3Module,
-    RegionModule,
-    CategoryModule,
   ],
   providers: [
     {

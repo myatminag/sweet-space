@@ -3,7 +3,7 @@ import { config } from 'dotenv';
 import { ConfigService } from '@nestjs/config';
 import { DataSource, DataSourceOptions } from 'typeorm';
 
-import { EnvVariables } from '@/utils/types';
+import { EnvVariables } from 'src/lib/types';
 
 config();
 

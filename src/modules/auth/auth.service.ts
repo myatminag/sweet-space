@@ -1,26 +1,24 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { compare } from 'bcryptjs';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { genSalt, hash } from 'bcryptjs';
 import ms from 'ms';
 
-import { EnvVariables } from '@/utils/types';
+import { EnvVariables } from 'src/lib/types';
 import { SignUpDto } from './dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import { ForgotPasswordDTO } from './dto/forgot-password.dto';
 import { UserService } from '@/modules/user/user.service';
+import { MailService } from '@/modules/mail/mail.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
-    private configService: ConfigService<EnvVariables>,
     private userService: UserService,
+    private mailService: MailService,
+    private configService: ConfigService<EnvVariables>,
   ) {}
 
   async signUp(dto: SignUpDto) {
@@ -73,9 +71,7 @@ export class AuthService {
   async forgotPassword(dto: ForgotPasswordDTO) {
     const user = await this.userService.findUserByEmail(dto.email);
 
-    if (!user) {
-      throw new NotFoundException('User not found!');
-    }
+    return await this.mailService.forgotPasswordMail(user);
   }
 
   async refreshToken(token: string) {

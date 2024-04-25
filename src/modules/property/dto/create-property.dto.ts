@@ -13,8 +13,8 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-import { IsAtLeastOnePriceProvided } from '@/utils/custom-decorator';
-import { PropertType, NoiseLevel } from '@/utils/enum';
+import { IsAtLeastOnePriceProvided } from 'src/lib/custom-decorator';
+import { PropertType, NoiseLevel } from 'src/lib/enum';
 
 // const isValidAreaFormat = (value: string) => {
 //   const areaRegex = /^\d+\s*sqft$/i;

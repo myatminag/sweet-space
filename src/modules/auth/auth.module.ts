@@ -4,9 +4,10 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 
-import { EnvVariables } from '@/utils/types';
+import { EnvVariables } from 'src/lib/types';
 import { AuthService } from './auth.service';
 import { UserModule } from '../user/user.module';
+import { MailModule } from '../mail/mail.module';
 import { AuthController } from './auth.controller';
 import { User } from '@/modules/user/entities/user.entity';
 import { LocalStrategy } from './strategies/local.strategy';
@@ -17,6 +18,7 @@ import { RefreshTokenStrategy } from './strategies/refresh.strategy';
   imports: [
     UserModule,
     PassportModule,
+    MailModule,
     TypeOrmModule.forFeature([User]),
     JwtModule.registerAsync({
       useFactory: async (configService: ConfigService<EnvVariables>) => ({
