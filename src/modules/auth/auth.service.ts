@@ -4,13 +4,15 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { genSalt, hash } from 'bcryptjs';
 import ms from 'ms';
+import crypto from 'crypto';
 
 import { EnvVariables } from 'src/lib/types';
 import { SignUpDto } from './dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto';
-import { ForgotPasswordDTO } from './dto/forgot-password.dto';
 import { UserService } from '@/modules/user/user.service';
 import { MailService } from '@/modules/mail/mail.service';
+import { ResetPasswordDTO } from './dto/reset-password.dto';
+import { ForgotPasswordDTO } from './dto/forgot-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -25,7 +27,7 @@ export class AuthService {
     const salt = await genSalt();
     const hashPassword = await hash(dto.password, salt);
 
-    const user = await this.userService.createUser({
+    const user = await this.userService.create({
       ...dto,
       password: hashPassword,
     });
@@ -50,7 +52,7 @@ export class AuthService {
   }
 
   async validateUser(email: string, password: string) {
-    const user = await this.userService.findUserByEmail(email);
+    const user = await this.userService.findByEmail(email);
 
     if (!user) {
       return null;
@@ -69,9 +71,34 @@ export class AuthService {
   }
 
   async forgotPassword(dto: ForgotPasswordDTO) {
-    const user = await this.userService.findUserByEmail(dto.email);
+    const user = await this.userService.findByEmail(dto.email);
 
-    return await this.mailService.forgotPasswordMail(user);
+    // const isExpired = user.isResetTokenExpire();
+
+    // if (isExpired && user.reset_token) {
+    //   user.reset_token = null;
+    //   user.expires_time = null;
+
+    //   throw new RequestTimeoutException('Token is invalid!');
+    // }
+
+    const token = crypto.randomBytes(32).toString('hex');
+    const expirationTime = new Date();
+
+    expirationTime.setSeconds(expirationTime.getSeconds() + 30);
+
+    user.reset_token = token;
+    user.expires_time = expirationTime;
+
+    await this.userService.save(user);
+
+    return await this.mailService.forgotPasswordMail(user, token);
+  }
+
+  async resetPassword(dto: ResetPasswordDTO) {
+    const existingUser = await this.userService.findById(dto.user_id);
+
+    return existingUser;
   }
 
   async refreshToken(token: string) {

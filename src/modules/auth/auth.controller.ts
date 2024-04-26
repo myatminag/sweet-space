@@ -6,6 +6,7 @@ import { SignUpDto } from './dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import { Public } from './decorators/public.decorator';
 import { ForgotPasswordDTO } from './dto/forgot-password.dto';
+import { ResetPasswordDTO } from './dto/reset-password.dto';
 import { RefreshTokenGuard } from './guards/refresh-token.guard';
 
 @ApiTags('Auth')
@@ -31,6 +32,12 @@ export class AuthController {
   @Post('forgot-password')
   forgotPassword(@Body() dto: ForgotPasswordDTO) {
     return this.authSerivce.forgotPassword(dto);
+  }
+
+  @ApiOperation({ summary: 'Reset password' })
+  @Post('reset-password')
+  resetPassword(@Body() dto: ResetPasswordDTO) {
+    return this.authSerivce.resetPassword(dto);
   }
 
   @ApiOperation({ summary: 'Generate a new access token' })

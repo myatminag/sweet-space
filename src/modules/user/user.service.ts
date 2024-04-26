@@ -17,7 +17,7 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async createUser(dto: CreateUserDTO) {
+  async create(dto: CreateUserDTO) {
     const existingUser = await this.userRepository.findOneBy({
       email: dto.email,
     });
@@ -33,7 +33,7 @@ export class UserService {
     return user;
   }
 
-  async findUserByEmail(email: string) {
+  async findByEmail(email: string) {
     const user = await this.userRepository.findOneBy({ email });
 
     if (!user) {
@@ -43,7 +43,7 @@ export class UserService {
     return user;
   }
 
-  async findUserById(id: string) {
+  async findById(id: string) {
     const user = await this.userRepository.findOneBy({ user_id: id });
 
     if (!user) {
@@ -55,11 +55,15 @@ export class UserService {
     return user;
   }
 
-  async updateProfile(id: string, dto: UpdateUserDTO) {
-    const user = await this.findUserById(id);
+  async update(id: string, dto: UpdateUserDTO) {
+    const user = await this.findById(id);
 
     const updatedData = Object.assign(user, dto);
 
     return await this.userRepository.save(updatedData);
+  }
+
+  async save(user: User) {
+    return await this.userRepository.save(user);
   }
 }

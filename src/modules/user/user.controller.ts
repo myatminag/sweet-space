@@ -16,7 +16,7 @@ export class UserController {
 
   @Get(':uuid')
   findUserById(@Param('uuid', ParseUUIDPipe) id: string) {
-    return this.userService.findUserById(id);
+    return this.userService.findById(id);
   }
 
   @Put(':uuid')
@@ -24,6 +24,6 @@ export class UserController {
     @Param('uuid', ParseUUIDPipe) id: string,
     @Body() dto: UpdateUserDTO,
   ) {
-    return this.userService.updateProfile(id, dto);
+    return this.userService.update(id, dto);
   }
 }

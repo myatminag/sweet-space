@@ -17,7 +17,7 @@ export class PropertyService {
   ) {}
 
   async createProperty(userId: string, dto: CreatePropertyDTO) {
-    const user = await this.userService.findUserById(userId);
+    const user = await this.userService.findById(userId);
 
     const property = await this.propertyRepository.save({
       ...dto,

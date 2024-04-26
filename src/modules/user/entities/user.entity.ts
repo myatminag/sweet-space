@@ -1,6 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { Property } from '@/modules/property/entities/property.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity('user')
 export class User {
@@ -21,4 +22,15 @@ export class User {
 
   @OneToMany(() => Property, (property) => property.user)
   properties: Property[];
+
+  @Column({ nullable: true })
+  @Exclude({ toPlainOnly: true })
+  reset_token: string;
+
+  @Column({ nullable: true })
+  expires_time: Date;
+
+  isResetTokenExpire(): boolean {
+    return this.expires_time < new Date();
+  }
 }
