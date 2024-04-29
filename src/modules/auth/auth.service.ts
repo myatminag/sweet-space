@@ -73,19 +73,10 @@ export class AuthService {
   async forgotPassword(dto: ForgotPasswordDTO) {
     const user = await this.userService.findByEmail(dto.email);
 
-    // const isExpired = user.isResetTokenExpire();
-
-    // if (isExpired && user.reset_token) {
-    //   user.reset_token = null;
-    //   user.expires_time = null;
-
-    //   throw new RequestTimeoutException('Token is invalid!');
-    // }
-
     const token = crypto.randomBytes(32).toString('hex');
     const expirationTime = new Date();
 
-    expirationTime.setSeconds(expirationTime.getSeconds() + 30);
+    expirationTime.setHours(expirationTime.getHours() + 1);
 
     user.reset_token = token;
     user.expires_time = expirationTime;
@@ -96,9 +87,25 @@ export class AuthService {
   }
 
   async resetPassword(dto: ResetPasswordDTO) {
-    const existingUser = await this.userService.findById(dto.user_id);
+    const user = await this.userService.findById(dto.user_id);
 
-    return existingUser;
+    const isExpired = user.isResetTokenExpire();
+
+    if (isExpired) {
+      user.reset_token = null;
+      user.expires_time = null;
+
+      await this.userService.save(user);
+
+      throw new UnauthorizedException('Token is expired!');
+    }
+
+    const salt = await genSalt();
+    const hashPassword = await hash(dto.new_password, salt);
+
+    user.password = hashPassword;
+
+    return await this.userService.save(user);
   }
 
   async refreshToken(token: string) {
