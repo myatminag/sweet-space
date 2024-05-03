@@ -2,10 +2,10 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/configs/*": ["src/configs/*"],
-      "@/constants/*": ["src/constants/*"],
-      "@/modules/*": ["src/modules/*"],
-      "@/utils/*": ["src/utils/*"]
+      "@db/*": ["src/db/*"],
+      "@lib/*": ["src/lib/*"],
+      "@modules/*": ["src/modules/*"],
+      "@shared/*": ["src/shared/*"]
     }
   }
 }

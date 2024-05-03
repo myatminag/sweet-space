@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Pagination } from 'src/lib/types';
-import { UserService } from '../user/user.service';
+import { UserService } from '../../user/user.service';
 import { Property } from './entities/property.entity';
 import { CreatePropertyDTO } from './dto/create-property.dto';
 import { UpdatePropertyDTO } from './dto/update-property.dto';
