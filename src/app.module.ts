@@ -3,7 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { APP_GUARD } from '@nestjs/core';
 
-import { dataSouceOption } from '@/configs/database-config';
+import { dataSouceOption } from './db/datasource';
 import { AuthModule } from '@/modules/auth/auth.module';
 import { PropertyModule } from '@/modules/property/property.module';
 import { UserModule } from '@/modules/user/user.module';
