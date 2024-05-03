@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-import { Property } from '@/modules/property/entities/property.entity';
+import { Property } from '@modules/properties/property/entities/property.entity';
 import { Exclude } from 'class-transformer';
 
 @Entity('user')

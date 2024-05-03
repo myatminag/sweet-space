@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString, Matches } from 'class-validator';
 
-import { PASSWORD_REGEX } from '@/constants/regex';
+import { PASSWORD_REGEX } from 'src/libs/constants';
 
 export class ResetPasswordDTO {
   @IsString()

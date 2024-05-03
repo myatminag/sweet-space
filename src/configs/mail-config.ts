@@ -2,7 +2,7 @@ import { MailerOptions } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
 import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
 
-import { EnvVariables } from 'src/lib/types';
+import { EnvVariables } from 'src/libs/types';
 
 const configService = new ConfigService<EnvVariables>();
 

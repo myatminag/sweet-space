@@ -6,11 +6,11 @@ import { genSalt, hash } from 'bcryptjs';
 import ms from 'ms';
 import crypto from 'crypto';
 
-import { EnvVariables } from 'src/lib/types';
+import { EnvVariables } from 'src/libs/types';
 import { SignUpDto } from './dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto';
-import { UserService } from '@/modules/user/user.service';
-import { MailService } from '@/modules/mail/mail.service';
+import { UserService } from '@modules/user/user.service';
+import { MailService } from '@shared/mail/mail.service';
 import { ResetPasswordDTO } from './dto/reset-password.dto';
 import { ForgotPasswordDTO } from './dto/forgot-password.dto';
 

@@ -3,7 +3,7 @@ import { config } from 'dotenv';
 import { ConfigService } from '@nestjs/config';
 import { DataSource, DataSourceOptions } from 'typeorm';
 
-import { EnvVariables } from 'src/lib/types';
+import { EnvVariables } from 'src/libs/types';
 
 config();
 
@@ -19,7 +19,7 @@ export const dataSouceOption: DataSourceOptions = {
   synchronize: false,
   logging: true,
   migrationsRun: false,
-  entities: [join(__dirname, '../**/*.entity{.ts,.js}')],
+  entities: [join(__dirname, '/../**/*.entity{.ts,.js}')],
   migrations: [join(__dirname, '/migrations/**/*{.ts,.js}')],
 };
 

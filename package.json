@@ -23,7 +23,7 @@
     "prepush": "pnpm run test",
     "eslint:fix": "pnpm run eslint:check --fix",
     "eslint:check": "eslint \"{src,apps,libs,test}/**/*.ts\"",
-    "typeorm": "npm run build && npx typeorm -d src/db/datasource.ts",
+    "typeorm": "node node_modules/typeorm/cli-ts-node-commonjs.js -d ./src/db/datasource.ts",
     "migration:generate": "npm run typeorm migration:generate",
     "migration:run": "npm run typeorm migration:run",
     "migration:revert": "npm run typeorm migration:revert"
@@ -83,7 +83,7 @@
     "supertest": "^6.3.3",
     "ts-jest": "^29.1.0",
     "ts-loader": "^9.4.3",
-    "ts-node": "^10.9.2",
+    "ts-node": "^10.0.0",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.1.3"
   },
