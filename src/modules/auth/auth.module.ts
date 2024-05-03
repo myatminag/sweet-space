@@ -4,7 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 
-import { EnvVariables } from 'src/lib/types';
+import { EnvVariables } from 'src/libs/types';
 import { AuthService } from './auth.service';
 import { UserModule } from '../user/user.module';
 import { MailModule } from '../../shared/mail/mail.module';

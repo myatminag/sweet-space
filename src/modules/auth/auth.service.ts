@@ -6,7 +6,7 @@ import { genSalt, hash } from 'bcryptjs';
 import ms from 'ms';
 import crypto from 'crypto';
 
-import { EnvVariables } from '@lib/types';
+import { EnvVariables } from 'src/libs/types';
 import { SignUpDto } from './dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import { UserService } from '@modules/user/user.service';

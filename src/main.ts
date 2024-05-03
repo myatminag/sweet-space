@@ -5,7 +5,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import basicAuth from 'express-basic-auth';
 
 import { AppModule } from './app.module';
-import { EnvVariables } from '@lib/types';
+import { EnvVariables } from 'src/libs/types';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

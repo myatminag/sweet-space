@@ -2,8 +2,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
+      "@configs/*": ["src/configs/*"],
       "@db/*": ["src/db/*"],
-      "@lib/*": ["src/lib/*"],
+      "@libs/*": ["src/libs/*"],
       "@modules/*": ["src/modules/*"],
       "@shared/*": ["src/shared/*"]
     }

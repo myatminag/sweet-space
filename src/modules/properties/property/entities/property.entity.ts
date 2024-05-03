@@ -8,7 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-import { PropertType, NoiseLevel } from '@lib/enum';
+import { PropertType, NoiseLevel } from 'src/libs/enum';
 import { User } from '@modules/user/entities/user.entity';
 
 @Entity('property')
